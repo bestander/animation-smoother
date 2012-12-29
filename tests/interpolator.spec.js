@@ -7,7 +7,7 @@
 /*global it:true describe:true expect:true spyOn:true beforeEach:true afterEach:true jasmine:true window runs waitsFor*/
 "use strict";
 
-require('');
+require('animation-smoother/index.js');
 
 describe('Object Coordinate Interpolator', function () {
   it('should be awesome', function () {
