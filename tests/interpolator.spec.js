@@ -24,11 +24,23 @@ describe('Object Coordinate Interpolator', function () {
 
     spyOn(Date, 'now').andReturn(currentTime + 1);
     interpolator.updateAll();
-    expect(currentPosition).toEqual({x: 100, y: 200});
+    expect(currentPosition.x).toBeCloseTo(100, 0);
+    expect(currentPosition.y).toBeCloseTo(200, 0);
+
+    Date.now.andReturn(currentTime + 250);
+    interpolator.updateAll();
+    expect(currentPosition.x).toBeCloseTo(175, 0);
+    expect(currentPosition.y).toBeCloseTo(250, 0);
 
     Date.now.andReturn(currentTime + 500);
     interpolator.updateAll();
-    expect(currentPosition).toEqual({x: 100, y: 200});
+    expect(currentPosition.x).toBeCloseTo(250, 0);
+    expect(currentPosition.y).toBeCloseTo(300, 0);
+
+    Date.now.andReturn(currentTime + 1000);
+    interpolator.updateAll();
+    expect(currentPosition.x).toBeCloseTo(400, 0);
+    expect(currentPosition.y).toBeCloseTo(400, 0);
   });
 });
 
