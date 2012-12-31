@@ -25,7 +25,7 @@ function ObjectCoordinateInterpolator (initialCoordinate) {
 module.exports = ObjectCoordinateInterpolator;
 
 /**
- * update all tweens
+ * update all interpolators
  */
 ObjectCoordinateInterpolator.updateAll = function () {
   TWEEN.update();

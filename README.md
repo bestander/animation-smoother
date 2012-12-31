@@ -1,28 +1,29 @@
-animation-smoother
-==========
+# animation-smoother
+
 [![web component logo](https://component.jit.su/component-badge.svg)](https://github.com/component/component)
 
-Just a few tools for games and multimedia that render animations based on inconsistent and irregular data.  
+## Reasoning
 
-For example a remote server may send to a client positions of an object at times T1 and T2.  
-This utility is able to give an interpolated position of the object at time T1` that is between T1 and T2.    
-Extrapolation based on recent speed of the object's is in TODO list for this module.  
+This module may be useful for doing animations based on inconsistent and irregular updates.  
+It can be used in network games where network lags would prevent smooth animation of game objects.  
+
 
 ## Usage
 
 ```javascript
-... sphere is defined as a Mesh in three.js for example
-var Interpolator = require('animation-smoother');
+var ObjectCoordinateInterpolator = require('animation-smoother');
+...
 
-var ballPositions = new Interpolator({x: 100, y: 100});
+var ballPositions = new ObjectCoordinateInterpolator({x: 100, y: 100});
 ballPositions.onCoordinateRequest(function () {
+  // sphere is defined as a Mesh in three.js for example
   sphere.position.x = this.x;
   sphere.position.y = this.y;
 });
 
 function animate() {
   requestAnimationFrame( animate );
-  Interpolator.updateAll();
+  ObjectCoordinateInterpolator.updateAll();
 }
 ...
 ballPositions.scheduleNext({x: 125, y: 77}, 100);
@@ -33,23 +34,39 @@ ballPositions.scheduleNext({x: 134, y: 80}, 97);
 ## API
 
 ### ObjectCoordinateInterpolator(initialCoordinate)
-constructor, call it for every object that needs interpolation
-**initialCoordinate** Initial coordinate for the object that needs interpolated coordinates
+Create a new interpolator instance for any object that may require an actual coordinate at any poing.    
+`initialCoordinate` is the start coordinate for the object.
 
-### scheduleNext(coordinate, delayFromNow)
-Call this function
-**coordinate** Destination coordinate
-**delayFromNow** In how many milliseconds the object should be at **coordinate**
+### updateAll()
+Interpolate all objects' coordinate at current moment.  
+Be advised that it calls `TWEEN.update` method and it will execute update for all `Tween.js` objects.   
+`callback`'s registered at `ObjectCoordinateInterpolator#onCoordinateRequest` will be called.
 
-### scheduleNext(coordinate, delayFromNow)
-**coordinate** Destination coordinate
-**delayFromNow** In how many milliseconds the object should be at **coordinate**
+### ObjectCoordinateInterpolator#scheduleNext(coordinate, delayFromNow)
+Put a new destination `coordinate` in the queue.  
+The motion will start immediately after the previous one finishes.  
+`delayFromNow` indicates in how many milliseconds from **now** the motion should **finish**.
+
+### ObjectCoordinateInterpolator#onCoordinateRequest(callback)
+Register a `callback` that will be called every time `ObjectCoordinateInterpolator#update` is executed.  
+**this** scope of the `callback` call will be the current coordinate.  
+
+## Running tests
+
+Make sure dependencies are installed and scripts are built:
+
+```
+$ make components
+$ make build
+```
+
+Then run **tests/JasmineSpecRunner.html** in your favorite browser.
 
 
-   
+## License
 
-License
---------
+(The MIT License)  
+
 Copyright 2012 Konstantin Raev (bestander@gmail.com)
 
 Permission is hereby granted, free of charge, to any person obtaining
