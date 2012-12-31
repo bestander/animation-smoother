@@ -8,10 +8,44 @@ For example a remote server may send to a client positions of an object at times
 This utility is able to give an interpolated position of the object at time T1` that is between T1 and T2.    
 Extrapolation based on recent speed of the object's is in TODO list for this module.  
 
-Usage
-###
+## Usage
 
-TODO
+```javascript
+... sphere is defined as a Mesh in three.js for example
+var Interpolator = require('animation-smoother');
+
+var ballPositions = new Interpolator({x: 100, y: 100});
+ballPositions.onCoordinateRequest(function () {
+  sphere.position.x = this.x;
+  sphere.position.y = this.y;
+});
+
+function animate() {
+  requestAnimationFrame( animate );
+  Interpolator.updateAll();
+}
+...
+ballPositions.scheduleNext({x: 125, y: 77}, 100);
+...
+ballPositions.scheduleNext({x: 134, y: 80}, 97);
+```
+
+## API
+
+### ObjectCoordinateInterpolator(initialCoordinate)
+constructor, call it for every object that needs interpolation
+**initialCoordinate** Initial coordinate for the object that needs interpolated coordinates
+
+### scheduleNext(coordinate, delayFromNow)
+Call this function
+**coordinate** Destination coordinate
+**delayFromNow** In how many milliseconds the object should be at **coordinate**
+
+### scheduleNext(coordinate, delayFromNow)
+**coordinate** Destination coordinate
+**delayFromNow** In how many milliseconds the object should be at **coordinate**
+
+
    
 
 License

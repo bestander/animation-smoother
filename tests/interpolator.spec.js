@@ -11,39 +11,93 @@ var Interpolator = require('animation-smoother/index.js');
 
 
 describe('Object Coordinate Interpolator', function () {
+  var interpolator;
+  var currentPosition;
+  var currentTime;
 
-  it('should return coordinates evenly spread between current and destination within a specified time period', function () {
-    var interpolator = new Interpolator({x: 100, y: 200});
-    var currentPosition;
-    var currentTime = Date.now();
-
+  beforeEach(function () {
+    currentTime = Date.now();
+    spyOn(Date, 'now').andReturn(currentTime);
+    interpolator = new Interpolator({x: 100, y: 200});
     interpolator.onCoordinateRequest(function () {
       currentPosition = {x: this.x, y: this.y};
     });
-    interpolator.scheduleNext({x: 400, y: 400}, 1000);
+  });
 
-    spyOn(Date, 'now').andReturn(currentTime + 1);
-    interpolator.updateAll();
+  it('should return coordinates evenly spread between current and destination within a specified time period', function () {
+    interpolator.scheduleNext({x: 400, y: 400}, 1000);
+    Date.now.andReturn(currentTime + 1);
+    Interpolator.updateAll();
+
     expect(currentPosition.x).toBeCloseTo(100, 0);
     expect(currentPosition.y).toBeCloseTo(200, 0);
 
     Date.now.andReturn(currentTime + 250);
-    interpolator.updateAll();
+    Interpolator.updateAll();
+
     expect(currentPosition.x).toBeCloseTo(175, 0);
     expect(currentPosition.y).toBeCloseTo(250, 0);
 
     Date.now.andReturn(currentTime + 500);
-    interpolator.updateAll();
+    Interpolator.updateAll();
+
     expect(currentPosition.x).toBeCloseTo(250, 0);
     expect(currentPosition.y).toBeCloseTo(300, 0);
 
     Date.now.andReturn(currentTime + 1000);
-    interpolator.updateAll();
+    Interpolator.updateAll();
+
     expect(currentPosition.x).toBeCloseTo(400, 0);
     expect(currentPosition.y).toBeCloseTo(400, 0);
   });
+
+  it('should return the destination coordinate if interpolation is scheduled for a moment that has passed', function () {
+    interpolator.scheduleNext({x: 400, y: 400}, -1000);
+    Date.now.andReturn(currentTime + 1);
+    Interpolator.updateAll();
+
+    expect(currentPosition.x).toBeCloseTo(400, 0);
+    expect(currentPosition.x).toBeCloseTo(400, 0);
+
+  });
+
+  describe('when chaining scheduled positions', function () {
+    it('should finish the previous motion before doing next', function () {
+
+      interpolator.scheduleNext({x: 400, y: 400}, 1000);
+      Date.now.andReturn(currentTime + 500);
+      Interpolator.updateAll();
+
+      expect(currentPosition.x).toBeCloseTo(250, 0);
+      expect(currentPosition.y).toBeCloseTo(300, 0);
+
+      interpolator.scheduleNext({x: 600, y: 600}, 1000);
+      Date.now.andReturn(currentTime + 1000);
+      Interpolator.updateAll();
+
+      expect(currentPosition.x).toBeCloseTo(400, 0);
+      expect(currentPosition.y).toBeCloseTo(400, 0);
+
+      Date.now.andReturn(currentTime + 1250);
+      Interpolator.updateAll();
+
+      expect(currentPosition.x).toBeCloseTo(500, 0);
+      expect(currentPosition.y).toBeCloseTo(500, 0);
+
+      Date.now.andReturn(currentTime + 1500);
+      Interpolator.updateAll();
+
+      expect(currentPosition.x).toBeCloseTo(600, 0);
+      expect(currentPosition.y).toBeCloseTo(600, 0);
+
+      Date.now.andReturn(currentTime + 2000);
+      Interpolator.updateAll();
+
+      expect(currentPosition.x).toBeCloseTo(600, 0);
+      expect(currentPosition.y).toBeCloseTo(600, 0);
+
+    });
+  });
+
 });
-
-
-
 
