@@ -12,8 +12,7 @@
     "bestander/tween.js": "7.0.0"
   },
   "development": {
-    "bestander/jasmine": "*",
-    "bestander/lodash": "*"
+    "bestander/jasmine": "*"
   },
   "main" : "index.js",
   "scripts" : [
