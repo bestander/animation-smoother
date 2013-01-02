@@ -39,7 +39,7 @@ Be advised that it calls `TWEEN.update` method thus all `Tween.js` objects will 
 The `callback`s registered at `ObjectCoordinateInterpolator#onCoordinateRequest` will be invoked.
 
 ### ObjectCoordinateInterpolator(initialCoordinate)
-Create a new interpolator instance for any object that may require an actual coordinate at any poing.    
+Create a new interpolator instance for any object that may require coordianate interpolation.    
 `initialCoordinate` is the start coordinate for the object.
 
 ### ObjectCoordinateInterpolator#scheduleNext(coordinate, delayFromNow)
