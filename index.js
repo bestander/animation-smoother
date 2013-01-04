@@ -37,13 +37,15 @@ ObjectCoordinateInterpolator.updateAll = function () {
  * @param delayFromNow in how many milliseconds after current moment the animation must finish
  */
 ObjectCoordinateInterpolator.prototype.scheduleNext = function (coordinate, delayFromNow) {
+  var startTime;
   var animationDuration;
   var tween;
   delayFromNow = delayFromNow > 0 ? delayFromNow : 0;
 
-  animationDuration = Date.now() + delayFromNow - this._previosTweenFinishTime;
+  startTime = Math.max(Date.now(), this._previosTweenFinishTime);
+  animationDuration = Date.now() + delayFromNow - startTime;
   tween = new TWEEN.Tween(this._previosTweenTargetPosition).to(coordinate, animationDuration);
-  tween.start(this._previosTweenFinishTime);
+  tween.start(startTime);
   tween.onUpdate(this._onCoordinateRequest);
   this._previosTweenTargetPosition = coordinate;
   this._previosTweenFinishTime = Date.now() + animationDuration;

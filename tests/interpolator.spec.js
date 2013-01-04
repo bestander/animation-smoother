@@ -51,7 +51,7 @@ describe('Object Coordinate Interpolator', function () {
     expect(currentPosition.y).toBeCloseTo(400, 0);
   });
 
-  it('should return the destination coordinate if interpolation is scheduled for a moment that has passed', function () {
+  it('should return the destination coordinate immediately if interpolation is scheduled for a moment that has passed', function () {
     interpolator.scheduleNext({x: 400, y: 400}, -1000);
     Date.now.andReturn(currentTime + 1);
     Interpolator.updateAll();
@@ -95,6 +95,26 @@ describe('Object Coordinate Interpolator', function () {
 
       expect(currentPosition.x).toBeCloseTo(600, 0);
       expect(currentPosition.y).toBeCloseTo(600, 0);
+
+    });
+
+    it('should start immediately and finish at specified time if previous motion has finished long before', function () {
+
+      Date.now.andReturn(currentTime + 2000);
+      interpolator.scheduleNext({x: 400, y: 400}, 1000);
+
+      Date.now.andReturn(currentTime + 2250);
+      Interpolator.updateAll();
+
+      expect(currentPosition.x).toBeCloseTo(175, 0);
+      expect(currentPosition.y).toBeCloseTo(250, 0);
+
+      Date.now.andReturn(currentTime + 2500);
+      Interpolator.updateAll();
+
+      expect(currentPosition.x).toBeCloseTo(250, 0);
+      expect(currentPosition.y).toBeCloseTo(300, 0);
+
 
     });
   });
