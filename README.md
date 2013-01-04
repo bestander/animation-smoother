@@ -33,14 +33,14 @@ ballPositions.scheduleNext({x: 134, y: 80}, 97);
 
 ## API
 
-### ObjectCoordinateInterpolator(initialCoordinate)
-Create a new interpolator instance for any object that may require an actual coordinate at any poing.    
-`initialCoordinate` is the start coordinate for the object.
-
 ### updateAll()
-Interpolate all objects' coordinate at current moment.  
-Be advised that it calls `TWEEN.update` method and it will execute update for all `Tween.js` objects.   
-`callback`'s registered at `ObjectCoordinateInterpolator#onCoordinateRequest` will be called.
+Interpolate all objects' coordinate for current moment.  
+Be advised that it calls `TWEEN.update` method thus all `Tween.js` objects will be updated globally.   
+The `callback`s registered at `ObjectCoordinateInterpolator#onCoordinateRequest` will be invoked.
+
+### ObjectCoordinateInterpolator(initialCoordinate)
+Create a new interpolator instance for any object that may require coordianate interpolation.    
+`initialCoordinate` is the start coordinate for the object.
 
 ### ObjectCoordinateInterpolator#scheduleNext(coordinate, delayFromNow)
 Put a new destination `coordinate` in the queue.  
@@ -48,7 +48,7 @@ The motion will start immediately after the previous one finishes.
 `delayFromNow` indicates in how many milliseconds from **now** the motion should **finish**.
 
 ### ObjectCoordinateInterpolator#onCoordinateRequest(callback)
-Register a `callback` that will be called every time `ObjectCoordinateInterpolator#update` is executed.  
+Register a `callback` that will be called every time `ObjectCoordinateInterpolator#updateAll` is executed.  
 **this** scope of the `callback` call will be the current coordinate.  
 
 ## Running tests
